@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+
+  reaction:
+    image: breaky2go/reaction:prod
+
+    links:
+      - mongo
+
+    ports:
+      - "80:80"
+
+    env_file: ./reaction/ignore/env
+
+  mongo:
+    image: mongo:latest
+
+    expose:
+      - 27017
+
+    command: mongod --storageEngine=wiredTiger
+
+    volumes:
+      - database:/data/db/
+
+  mongo-express:
+    image: mongo-express:latest
+
+    ports:
+      - "8081:8081"
+
+    links:
+      - mongo
+
+    env_file: ./mongo-express/ignore/env
+
+volumes:
+  database:
+    driver: local-persist
+    driver_opts:
+      mountpoint: /data/db/
+
